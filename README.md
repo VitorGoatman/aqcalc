@@ -9,9 +9,7 @@ There is a pre-built binary for Windows in the [releases](https://github.com/Vit
 You can install `aqcalc` with the Nimble package manager if you have Nim installed.
 
 ```
-git clone https://github.com/VitorGoatman/aqcalc
-cd aqcalc
-nimble install
+nimble install aqcalc
 ```
 
 ## Using
