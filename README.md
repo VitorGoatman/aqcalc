@@ -13,3 +13,29 @@ git clone https://github.com/VitorGoatman/aqcalc
 cd aqcalc
 nimble install
 ```
+
+## Using
+
+`aqcalc` can be used like any other Nim library.
+
+```nim
+import aqcalcpkg/aq
+
+assert aq("Hello, World!") == 214
+```
+
+Additionally, `aqcalc` can be invoked at the command line.
+
+```
+Aqqabala Calculator
+
+Usage:
+  aqcalc <word>...
+  aqcalc --aqqa <word>...
+  aqcalc --revaq <number>...
+
+Options:
+  -h, --help  Show this message
+  --aqqa      Save AQ result to local database. (~/.local/share/aqcalc)
+  --revaq     Show all database entries that have this result.
+```
