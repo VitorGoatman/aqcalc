@@ -54,7 +54,7 @@ if args["--revaq"]:
       echo "  ", r[0]
 
 if args["-e"]:
-  var dump: string
+  var dump: string = "# aqcalc plain txt db export\n# This is a comment"
   var tables: seq[int]
   for t in db.fastRows(sql"SELECT name FROM sqlite_sequence ORDER BY name;"):
     tables.add(t[0][2..^1].parseInt)
