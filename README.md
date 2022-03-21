@@ -28,12 +28,15 @@ Additionally, `aqcalc` can be invoked at the command line.
 Aqqabala Calculator
 
 Usage:
-  aqcalc <word>...
-  aqcalc --aqqa <word>...
+  aqcalc [--aqqa] <word>...
   aqcalc --revaq <number>...
+  aqcalc (-i | -e ) <filename>
+  aqcalc (-h | --help )
 
 Options:
   -h, --help  Show this message
+  -i          Import from plain text database
+  -e          Export to plain text database
   --aqqa      Save AQ result to local database. (~/.local/share/aqcalc)
-  --revaq     Show all database entries that have this result.
+  --revaq     Show all database entries that have this result
 ```
