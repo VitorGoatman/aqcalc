@@ -1,4 +1,5 @@
-import docopt, os, strformat, strutils, db_sqlite, algorithm, aqcalcpkg/aq
+import docopt, os, strformat, strutils, db_sqlite, algorithm
+import aqcalcpkg/[aq, aqfile]
 
 const doc = """
 Aqqabala Calculator
@@ -6,15 +7,17 @@ Aqqabala Calculator
 Usage:
   aqcalc [--aqqa] <word>...
   aqcalc --revaq <number>...
+  aqcalc -f <filename>...
   aqcalc (-i | -e ) <filename>
   aqcalc (-h | --help )
 
 Options:
   -h, --help  Show this message
-  -i          Import from plain text database
-  -e          Export to plain text database
   --aqqa      Save AQ result to local database. (~/.local/share/aqcalc)
   --revaq     Show all database entries that have this result
+  -f          Calculate the AQ value of every word inside a file
+  -i          Import from plain text database
+  -e          Export to plain text database
 """
 
 let
@@ -26,23 +29,19 @@ discard existsOrCreateDir dbpath
 
 proc writeDB(entry: string, dbname: string) =
   db.exec(sql(&"CREATE TABLE IF NOT EXISTS {dbname} (id INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE, entry VARCHAR(250) UNIQUE);"))
-  db.exec(sql(&"INSERT OR IGNORE INTO {dbname} (entry) VALUES ({dbQuote entry});"))
+  db.exec(sql(&"INSERT OR IGNORE INTO {dbname} (entry) VALUES ({dbQuote(entry.toUpperAscii)});"))
 
 if args["--aqqa"]:
   for word in @(args["<word>"]):
     let
       aqres = word.aq
       dbname = "aq" & $aqres
-    writeDB(word.strip.toUpperAscii, dbname)
+    writeDB(word.strip, dbname)
     echo "AQ ", aqres, " ="
     for r in db.fastRows(sql(&"SELECT entry FROM {dbname} ORDER BY entry")):
       echo "  ", r[0]
 
-else:
-  for word in @(args["<word>"]):
-    echo "AQ ",word.aq, " = ", word.strip.toUpperAscii
-
-if args["--revaq"]:
+elif args["--revaq"]:
   for number in @(args["<number>"]):
     try: discard number.parseInt
     except: quit("Error: \"--revaq\" only accepts integers.", 1)
@@ -53,8 +52,8 @@ if args["--revaq"]:
     for r in db.fastRows(sql(&"SELECT entry FROM {dbname} ORDER BY entry")):
       echo "  ", r[0]
 
-if args["-e"]:
-  var dump: string = "# aqcalc plain txt db export\n# This is a comment"
+elif args["-e"]:
+  var dump: string = "# aqcalc DB export\n# This is a comment\n\n"
   var tables: seq[int]
   for t in db.fastRows(sql"SELECT name FROM sqlite_sequence ORDER BY name;"):
     tables.add(t[0][2..^1].parseInt)
@@ -65,14 +64,25 @@ if args["-e"]:
     dump.add "\n"
   writeFile($args["<filename>"], dump)
 
-if args["-i"]:
+elif args["-i"]:
   let file: string = $args["<filename>"]
   var curdb: string
   try: discard file.readFile
   except: quit(&"Error: File {file} not found.", 1)
   for line in file.lines:
     if line.startsWith("aq"): curdb = line
-    if line.startsWith("  "): writeDB(line.strip.toUpperAscii, curdb)
+    if line.startsWith("  "): writeDB(line.strip, curdb)
     if line.startsWith("#"): discard
+
+elif args["-f"]:
+  for name in @(args["<filename>"]):
+    var file: string
+    try: file = name.aqFile
+    except: quit(&"Error: couldn't open file \"{file}\".")
+    writeFile("AQ-"&name, file)
+
+else:
+  for word in @(args["<word>"]):
+    echo "AQ ",word.aq, " = ", word.strip.toUpperAscii
 
 db.close()

@@ -30,13 +30,15 @@ Aqqabala Calculator
 Usage:
   aqcalc [--aqqa] <word>...
   aqcalc --revaq <number>...
+  aqcalc -f <filename>...
   aqcalc (-i | -e ) <filename>
   aqcalc (-h | --help )
 
 Options:
   -h, --help  Show this message
-  -i          Import from plain text database
-  -e          Export to plain text database
   --aqqa      Save AQ result to local database. (~/.local/share/aqcalc)
   --revaq     Show all database entries that have this result
+  -f          Calculate the AQ value of every word inside a file
+  -i          Import from plain text database
+  -e          Export to plain text database
 ```

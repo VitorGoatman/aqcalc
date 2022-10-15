@@ -1,9 +1,9 @@
-from strutils import Digits, parseInt, toLowerAscii
+from strutils import Digits, toLowerAscii
 
 func aq*(input: string): int =
   for c in input.toLowerAscii:
     case c:
-      of Digits: result += parseInt $c
+      of Digits: result += c.int - 48
       of 'a': result += 10
       of 'b': result += 11
       of 'c': result += 12
