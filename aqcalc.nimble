@@ -1,6 +1,6 @@
 # Package
 
-version       = "0.3.0"
+version       = "0.3.1"
 author        = "VitorGoatman"
 description   = "Calculate gematria values for Alphanumeric Qabbala"
 license       = "Unlicense"

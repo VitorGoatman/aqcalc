@@ -1,16 +1,21 @@
-import strutils, re, aq
+from strutils import split
+from aq import aq
 proc aqFile*(file: string): string =
   for line in file.lines:
-    if line.aq != 0:
-      result.add line.strip&" = " & $line.aq&"\n"
-      let words = line.split(re"\s")
+    let lineaq = line.aq
+    if lineaq != 0:
+      let words = line.split
+      var tline,nline:string
       for word in words:
         if word != "":
+          if word.len == 1: tline.add word&"  "
+          else: tline.add word&" "
           let sum = word.aq
           let slen = ($sum).len
           var offset = word.len - slen
           if offset < 0: offset = 0
-          result.add $sum&" "
-          for i in 0..<offset: result.add " "
-      result.add "\n"
+          nline.add $sum&" "
+          for i in 0..<offset: nline.add " "
+      tline.add "= " & $lineaq
+      result.add tline&"\n"&nline&"\n"
     else: result.add "\n"
